@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('durgapuja-ui') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                sh '''
+                   sudo mkdir -p /var/www/html
+                   sudo rm -rf /var/www/html/*
+                   sudo cp -r durgapuja-ui/build/* /var/www/html/
+                '''
+            }
+        }
+    }
+}
