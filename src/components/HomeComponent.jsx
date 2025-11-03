@@ -4,6 +4,7 @@ import AddExpense from "./AddExpense";
 import ExpenseList from "./ExpenseList";
 import { Box, Paper, Typography, AppBar, Toolbar, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import StakeHolderComponent from "./StakeHolderComponent";
+import BillUpload from "./BillUpload";
 
 // ...existing code...
 function HomeComponent({ setToken }) {
@@ -13,6 +14,8 @@ function HomeComponent({ setToken }) {
   const [showStakeHolder, setShowStakeHolder] = useState(false);
   const [stakeHolders, setStakeHolders] = useState([]);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); // new state for logout confirmation
+  const [showBillUpload, setShowBillUpload] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -127,7 +130,7 @@ function HomeComponent({ setToken }) {
               fontFamily: "'Roboto', sans-serif",
             }}
           >
-            Jadavpur Durga Puja Committee
+            Jadavpur Durga Puja Expense
           </Typography>
           <Button
             variant="text"
@@ -166,6 +169,7 @@ function HomeComponent({ setToken }) {
             onClick={() => {
               setShowExpenses(false);
               setShowStakeHolder(false); // <-- Add this line
+              setShowBillUpload(false);
             }}
           >
             Add Expense
@@ -181,6 +185,7 @@ function HomeComponent({ setToken }) {
           onClick={() => {
             setShowExpenses(true);
             setShowStakeHolder(false);
+             setShowBillUpload(false);
             fetchExpenses();
           }}
         >
@@ -196,66 +201,105 @@ function HomeComponent({ setToken }) {
           onClick={() => {
             setShowStakeHolder(true);
             setShowExpenses(false);
+             setShowBillUpload(false);
             fetchStakeHolders();
           }}
         >
           Stake Holder Expense
         </Button>
+       <Button
+  variant="contained"
+  sx={{
+    backgroundColor: "#dc3545",
+    color: "#fff",
+    width: { xs: "100%", sm: "auto" },
+  }}
+  onClick={() => {
+    setShowBillUpload(true);
+    setShowExpenses(false);
+    setShowStakeHolder(false);
+  }}
+>
+  Upload Bills
+</Button>
+
+  
+
       </Box>
 
       {/* Main Content */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flex: 1,
-          padding: 3,
-        }}
-      >
-        {isAdmin && !showExpenses && !showStakeHolder && (
-          <Paper
-            elevation={3}
-            sx={{
-              padding: { xs: 2, sm: 3 }, // Responsive padding
-              backgroundColor: "#ffffff",
-              borderRadius: 2,
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              maxWidth: "900px",
-              width: "100%",
-              border: "10px solid #ccc",
-            }}
-          >
-            <AddExpense addExpense={addExpense} />
-          </Paper>
-        )}
-        {showExpenses && (
-          <Paper
-            elevation={3}
-            sx={{
-              padding: { xs: 2, sm: 3 },
-              backgroundColor: "#ffffff",
-              borderRadius: 2,
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              maxWidth: "900px",
-              width: "100%",
-            }}
-          >
-            <ExpenseList expenses={expenses} />
-          </Paper>
-        )}
-        {showStakeHolder && (
-          <StakeHolderComponent
-            stakeHolders={stakeHolders}
-            isAdmin={isAdmin}
-            onGenerateExpense={() => {
-              setShowStakeHolder(true);
-              setShowExpenses(false);
-              fetchStakeHolders();
-            }}
-          />
-        )}
-      </Box>
+      
+{/* Remove the Paper component that's currently after the Upload Bills button */}
+
+{/* Main Content */}
+<Box
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    padding: 3,
+  }}
+>
+  {isAdmin && !showExpenses && !showStakeHolder && !showBillUpload && (
+    <Paper
+      elevation={3}
+      sx={{
+        padding: { xs: 2, sm: 3 },
+        backgroundColor: "#ffffff",
+        borderRadius: 2,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        maxWidth: "900px",
+        width: "100%",
+        border: "10px solid #ccc",
+      }}
+    >
+      <AddExpense addExpense={addExpense} />
+    </Paper>
+  )}
+  {showExpenses && !showBillUpload && (
+    <Paper
+      elevation={3}
+      sx={{
+        padding: { xs: 2, sm: 3 },
+        backgroundColor: "#ffffff",
+        borderRadius: 2,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        maxWidth: "900px",
+        width: "100%",
+      }}
+    >
+      <ExpenseList expenses={expenses} />
+    </Paper>
+  )}
+  {showStakeHolder && !showBillUpload && (
+    <StakeHolderComponent
+      stakeHolders={stakeHolders}
+      isAdmin={isAdmin}
+      onGenerateExpense={() => {
+        setShowStakeHolder(true);
+        setShowExpenses(false);
+        fetchStakeHolders();
+      }}
+    />
+  )}
+  {showBillUpload && (
+    <Paper
+      elevation={3}
+      sx={{
+        padding: { xs: 2, sm: 3 },
+        backgroundColor: "#ffffff",
+        borderRadius: 2,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        maxWidth: "900px",
+        width: "100%",
+      }}
+    >
+
+      <BillUpload />
+    </Paper>
+  )}
+</Box>
 
       {/* Footer */}
       <Box
@@ -296,4 +340,3 @@ function HomeComponent({ setToken }) {
 }
 
 export default HomeComponent;
-// ...existing code...
