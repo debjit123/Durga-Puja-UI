@@ -6,6 +6,7 @@ import { TextField, Button, Typography, Container, Alert } from '@mui/material';
 
 function SignupPage({ setToken }) {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -17,7 +18,7 @@ function SignupPage({ setToken }) {
     setSuccess('');
     try {
       // Call backend signup endpoint
-      const response = await axios.post('/signup', { username, password });
+      const response = await axios.post('/signup', { username, email, password });
       // If backend returns a token (auto-login), save it and update App state
       if (response.status === 201 || response.status === 200) {
         setSuccess('Signup successful. Please sign in.');
@@ -47,6 +48,15 @@ function SignupPage({ setToken }) {
           margin="normal"
         />
         <TextField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+         <TextField
           label="Password"
           type="password"
           value={password}
@@ -64,4 +74,3 @@ function SignupPage({ setToken }) {
 }
 
 export default SignupPage;
-// ...existing code...
